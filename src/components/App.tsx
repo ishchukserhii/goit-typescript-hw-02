@@ -9,9 +9,9 @@ import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import Modal from "react-modal";
 import ImageModal from "./ImageModal/ImageModal";
-import { ImgRespons } from "../types";
+import { ImgRespons, ApiResponse } from "../types";
 
-function App() {
+const App: React.FC = () => {
   const [inputText, setInputText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -19,34 +19,29 @@ function App() {
   const [page, setPage] = useState<number>(1);
   const [loadBtn, setLoadBtn] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   Modal.setAppElement("#root");
 
-  const handleImageClick = (imageUrl) => {
+  const handleImageClick = (imageUrl: string): void => {
     setSelectedImage(imageUrl);
     setIsModalOpen(true);
   };
 
-  const perPage = 12;
+  const perPage: number = 12;
 
   useEffect(() => {
-    if (inputText === "") {
-      return;
-    }
-    async function getData() {
+    if (inputText === "") return;
+
+    const getData = async (): Promise<void> => {
       setIsLoading(true);
       try {
         setError(false);
-        const data = await Api(inputText, page, perPage);
+        const data: ApiResponse = await Api(inputText, page, perPage);
 
-        setImg((img) => {
-          const updatedImg = [...img, ...data.results];
-          if (data.total - updatedImg.length > 0) {
-            setLoadBtn(true);
-          } else {
-            setLoadBtn(false);
-          }
+        setImg((prevImg) => {
+          const updatedImg = [...prevImg, ...data.results];
+          setLoadBtn(data.total - updatedImg.length > 0);
           return updatedImg;
         });
       } catch {
@@ -55,12 +50,13 @@ function App() {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
+
     getData();
   }, [inputText, page]);
 
-  const loadMore = () => {
-    setPage(page + 1);
+  const loadMore = (): void => {
+    setPage((prevPage) => prevPage + 1);
   };
 
   return (
@@ -80,6 +76,6 @@ function App() {
       />
     </>
   );
-}
+};
 
 export default App;

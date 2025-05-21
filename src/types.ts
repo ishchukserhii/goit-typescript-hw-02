@@ -1,6 +1,13 @@
 export interface ImgRespons {
-  alt: string;
-  small: string;
-  regular: string;
   id: string;
+  alt_description: string;
+  urls: {
+    small: string;
+    regular: string;
+  };
+}
+
+export interface ApiResponse {
+  total: number;
+  results: ImgRespons[];
 }
