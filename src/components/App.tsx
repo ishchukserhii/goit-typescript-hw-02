@@ -2,22 +2,23 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import SearchBar from "./SearchBar/SearchBar";
 import { Api } from "../Search";
-import toast, { ToastBar, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Loader from "./Loader/Loader";
 import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import Modal from "react-modal";
 import ImageModal from "./ImageModal/ImageModal";
+import { ImgRespons } from "../types";
 
 function App() {
-  const [inputText, setInputText] = useState("");
-  const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [img, setImg] = useState([]);
-  const [page, setPage] = useState(1);
-  const [loadBtn, setLoadBtn] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputText, setInputText] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [img, setImg] = useState<ImgRespons[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [loadBtn, setLoadBtn] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
   Modal.setAppElement("#root");
@@ -46,7 +47,7 @@ function App() {
           } else {
             setLoadBtn(false);
           }
-return updatedImg
+          return updatedImg;
         });
       } catch {
         setError(true);
@@ -58,21 +59,25 @@ return updatedImg
     getData();
   }, [inputText, page]);
 
-  const loadMore = ()=>{
-    setPage(page + 1)
-  }
+  const loadMore = () => {
+    setPage(page + 1);
+  };
 
   return (
     <>
       <Toaster />
       <SearchBar onSubmit={setInputText} setPage={setPage} setImg={setImg} />
-      {img.length > 0 && <ImageGallery  img={img} onImageClick={handleImageClick} />}
+      {img.length > 0 && (
+        <ImageGallery img={img} onImageClick={handleImageClick} />
+      )}
       {error && <ErrorMessage />}
       {isLoading && <Loader />}
       {img.length > 0 && loadBtn && <LoadMoreBtn loadMore={loadMore} />}
-      <ImageModal  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  imageUrl={selectedImage}/>
+      <ImageModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        imageUrl={selectedImage}
+      />
     </>
   );
 }
