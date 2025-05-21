@@ -1,4 +1,3 @@
-import React from 'react'
 import css from "./ImageCard.module.css"
 export const ImageCard = ({img, alt, onClick}) => {
   return (
